@@ -10,7 +10,7 @@ namespace Transmog
         public CompProperties_Transmog() => compClass = typeof(CompTransmog);
     }
 
-    class CompTransmog : ThingComp, IExposable
+    class CompTransmog : ThingComp
     {
         bool enabled;
         public bool Enabled
@@ -22,17 +22,17 @@ namespace Transmog
                 Update();
             }
         }
-        public List<TransmogApparel> apparel = new List<TransmogApparel>();
+        public List<TransmogApparel> transmog = new List<TransmogApparel>();
 
         Pawn Pawn => parent as Pawn;
 
-        public int ApparelCount => apparel.Count();
+        public int ApparelCount => transmog.Count();
 
-        public List<Apparel> Apparel => apparel.Select(transmog => transmog.GetApparel()).ToList();
+        public List<Apparel> Apparel => transmog.Select(transmog => transmog.GetApparel()).ToList();
 
         public void CopyFromApparel()
         {
-            apparel = Pawn.apparel.WornApparel.Select(
+            transmog = Pawn.apparel.WornApparel.Select(
                 apparel =>
                     new TransmogApparel()
                     {
@@ -43,28 +43,29 @@ namespace Transmog
                     }
             )
                 .ToList();
+            enabled = true;
             Update();
         }
 
-        public void CopyFromPreset(CompTransmog preset)
+        public void CopyFromPreset(List<TransmogApparel> preset)
         {
-            apparel = new List<TransmogApparel>();
-            foreach (var apparel in preset.apparel)
+            transmog = new List<TransmogApparel>();
+            foreach (var apparel in preset)
                 if (apparel.ApparelDef?.apparel.PawnCanWear(Pawn) ?? false)
-                    this.apparel.Add(apparel.DuplicateForPawn(Pawn));
-            enabled = preset.enabled;
+                    transmog.Add(apparel.DuplicateForPawn(Pawn));
+            enabled = true;
             Update();
         }
 
         public void Add(TransmogApparel transmog)
         {
-            apparel.Add(transmog);
+            this.transmog.Add(transmog);
             Update();
         }
 
         public void Remove(TransmogApparel transmog)
         {
-            apparel.Remove(transmog);
+            this.transmog.Remove(transmog);
             Update();
         }
 
@@ -72,14 +73,8 @@ namespace Transmog
 
         public override void PostExposeData()
         {
-            Scribe_Values.Look(ref enabled, "enabled");
-            Scribe_Collections.Look(ref apparel, "apparel");
-        }
-
-        public void ExposeData()
-        {
-            Scribe_Values.Look(ref enabled, "enabled");
-            Scribe_Collections.Look(ref apparel, "apparel");
+            Scribe_Values.Look(ref enabled, "transmogEnabled");
+            Scribe_Collections.Look(ref transmog, "transmog");
         }
     }
 }

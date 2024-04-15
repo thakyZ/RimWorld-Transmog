@@ -7,7 +7,7 @@ namespace Transmog
     static class PresetManager
     {
         static readonly string path = Path.Combine(GenFilePaths.ConfigFolderPath, "Transmog.xml");
-        public static Dictionary<string, CompTransmog> presets = new Dictionary<string, CompTransmog>();
+        public static Dictionary<string, List<TransmogApparel>> presets = new Dictionary<string, List<TransmogApparel>>();
 
         public static void DelPreset(string name)
         {
@@ -17,7 +17,7 @@ namespace Transmog
 
         public static void AddPreset(string name, CompTransmog preset)
         {
-            presets[name] = preset;
+            presets[name] = preset.transmog;
             SavePresets();
         }
 

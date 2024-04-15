@@ -8,7 +8,9 @@ namespace Transmog
     class ITab_Pawn_Transmog : ITab
     {
         Vector2 scrollPosition = Vector2.zero;
-        CompTransmog Preset => SelPawn.Preset();
+
+        Pawn Pawn => SelPawn ?? (SelThing as Corpse).InnerPawn;
+        CompTransmog Preset => Pawn.Preset();
         Texture2D Paint => ContentFinder<Texture2D>.Get("UI/Designators/Paint_Top");
 
         public ITab_Pawn_Transmog()
@@ -16,8 +18,6 @@ namespace Transmog
             size = new Vector2(504, 400);
             labelKey = "Transmog.Transmog".Translate();
         }
-
-        public override bool IsVisible => SelPawn.IsColonist;
 
         protected override void FillTab()
         {
@@ -41,7 +41,7 @@ namespace Transmog
                 Preset.CopyFromApparel();
 
             if (Widgets.ButtonText(new Rect(inRect.x + 1 * width / 3 + gap / 2, curY, width / 3 - gap, height), "Add".Translate()))
-                Find.WindowStack.Add(new Dialog_AddTransmog(SelPawn));
+                Find.WindowStack.Add(new Dialog_AddTransmog(Pawn));
 
             if (Widgets.ButtonText(new Rect(inRect.x + 2 * width / 3 + gap, curY, width / 3 - gap, height), "Transmog.Preset".Translate()))
                 Find.WindowStack.Add(
@@ -67,26 +67,28 @@ namespace Transmog
 
             curY += height + gap;
 
-            var scrollviewHeight = Preset.ApparelCount * height;
+            var scrollviewHeight = Preset.Apparel.Count * height;
             Widgets.BeginScrollView(new Rect(inRect.xMin, curY, width, inRect.height - curY), ref scrollPosition, new Rect(inRect.xMin, curY, width - margin, scrollviewHeight));
 
-            TransmogApparel apparelToRemove = null;
-            foreach (var apparel in Preset.apparel)
+            TransmogApparel transmogToRemove = null;
+            foreach (var transmog in Preset.transmog)
             {
                 var rowRect = new Rect(inRect.x, curY, width, height);
-
-                Widgets.ThingIcon(new Rect(inRect.x, curY, height, height), apparel.GetApparel());
-                Widgets.Label(new Rect(inRect.x + height + gap, curY + 5f, width, height - 10f), apparel.GetApparel().def.LabelCap);
+                Widgets.ThingIcon(new Rect(inRect.x, curY, height, height), transmog.GetApparel());
+                Widgets.Label(new Rect(inRect.x + height + gap, curY + 5f, width, height - 10f), transmog.GetApparel().def.LabelCap);
 
                 rowRight = new WidgetRow(rowRect.xMax - margin, rowRect.y, UIDirection.LeftThenDown);
                 if (rowRight.ButtonIcon(TexButton.Delete))
-                    apparelToRemove = apparel;
+                    transmogToRemove = transmog;
                 if (rowRight.ButtonIcon(Paint))
-                    Find.WindowStack.Add(new Dialog_EditTransmog(apparel));
+                {
+                    transmog.Pawn = Pawn;
+                    Find.WindowStack.Add(new Dialog_EditTransmog(transmog));
+                }
                 curY += height;
             }
-            if (apparelToRemove != null)
-                Preset.Remove(apparelToRemove);
+            if (transmogToRemove != null)
+                Preset.Remove(transmogToRemove);
             Widgets.EndScrollView();
         }
     }
