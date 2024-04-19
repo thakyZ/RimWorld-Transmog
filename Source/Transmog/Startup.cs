@@ -58,6 +58,6 @@ namespace Transmog
             }
         }
 
-        static bool Prefix(ref CompShield __instance, ref bool __result) => __instance.parent is Apparel apparel && apparel.Wearer == null ? (__result = false) : true;
+        static bool Prefix(ref CompShield __instance, ref bool __result) => !(__instance.parent is Apparel apparel) || apparel.Wearer != null || (__result = false);
     }
 }

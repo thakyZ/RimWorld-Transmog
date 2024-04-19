@@ -70,16 +70,24 @@ namespace Transmog
             var scrollviewHeight = Preset.Apparel.Count * height;
             Widgets.BeginScrollView(new Rect(inRect.xMin, curY, width, inRect.height - curY), ref scrollPosition, new Rect(inRect.xMin, curY, width - margin, scrollviewHeight));
 
-            TransmogApparel transmogToRemove = null;
-            foreach (var transmog in Preset.transmog)
+            int indexToMoveup = -1;
+            int indexToRemove = -1;
+            for (var i = 0; i < Preset.transmog.Count; ++i)
             {
+                var transmog = Preset.transmog[i];
                 var rowRect = new Rect(inRect.x, curY, width, height);
-                Widgets.ThingIcon(new Rect(inRect.x, curY, height, height), transmog.GetApparel());
-                Widgets.Label(new Rect(inRect.x + height + gap, curY + 5f, width, height - 10f), transmog.GetApparel().def.LabelCap);
+
+                if (i != 0 && Widgets.ButtonImage(new Rect(inRect.x, rowRect.y, height / 2, height / 2), TexButton.ReorderUp))
+                    indexToMoveup = i;
+                if (i != Preset.transmog.Count - 1 && Widgets.ButtonImage(new Rect(inRect.x, rowRect.y + height / 2, height / 2, height / 2), TexButton.ReorderDown))
+                    indexToMoveup = i + 1;
+
+                Widgets.ThingIcon(new Rect(inRect.x + height * 0.5f + gap, curY, height, height), transmog.GetApparel());
+                Widgets.Label(new Rect(inRect.x + height * 1.5f + gap * 2, curY + 5f, width, height - 10f), transmog.GetApparel().def.LabelCap);
 
                 rowRight = new WidgetRow(rowRect.xMax - margin, rowRect.y, UIDirection.LeftThenDown);
                 if (rowRight.ButtonIcon(TexButton.Delete))
-                    transmogToRemove = transmog;
+                    indexToRemove = i;
                 if (rowRight.ButtonIcon(Paint))
                 {
                     transmog.Pawn = Pawn;
@@ -87,9 +95,17 @@ namespace Transmog
                 }
                 curY += height;
             }
-            if (transmogToRemove != null)
-                Preset.Remove(transmogToRemove);
+            if (indexToMoveup != -1)
+                Preset.Moveup(indexToMoveup);
+            if (indexToRemove != -1)
+                Preset.RemoveAt(indexToRemove);
             Widgets.EndScrollView();
+
+            if (Event.current.keyCode == KeyBindingDefOf.Designator_Cancel.MainKey)
+            {
+                Preset.TryRevert();
+                Event.current.Use();
+            }
         }
     }
 }

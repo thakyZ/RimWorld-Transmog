@@ -8,10 +8,10 @@ namespace Transmog
 {
     class Dialog_AddTransmog : Window
     {
-        static IEnumerable<ThingDef> apparel = DefDatabase<ThingDef>.AllDefsListForReading.Where(def => def.IsApparel);
-        IEnumerable<ThingDef> apparelForPawn;
-        IEnumerable<ThingDef> filtered => apparelForPawn.Where(apparel => apparel.LabelCap.ToString().IndexOf(filter, StringComparison.InvariantCultureIgnoreCase) >= 0);
-        Pawn pawn;
+        static readonly IEnumerable<ThingDef> apparel = DefDatabase<ThingDef>.AllDefsListForReading.Where(def => def.IsApparel);
+        readonly IEnumerable<ThingDef> apparelForPawn;
+        IEnumerable<ThingDef> Filtered => apparelForPawn.Where(apparel => apparel.LabelCap.ToString().IndexOf(filter, StringComparison.InvariantCultureIgnoreCase) >= 0);
+        readonly Pawn pawn;
         public override Vector2 InitialSize => new Vector2(360, 720);
         Vector2 scrollPosition = Vector2.zero;
         string filter = "";
@@ -32,7 +32,7 @@ namespace Transmog
             var height = 32;
             var gap = 8;
             var curY = inRect.y;
-            var scrollviewHeight = filtered.Count() * height;
+            var scrollviewHeight = Filtered.Count() * height;
             var selected = false;
             GUI.SetNextControlName("Filter");
             filter = Widgets.TextField(new Rect(inRect.x, inRect.yMax - height, inRect.width, height), filter);
@@ -46,7 +46,7 @@ namespace Transmog
                 ref scrollPosition,
                 new Rect(inRect.x, inRect.y, inRect.width - 20f, scrollviewHeight)
             );
-            foreach (var apparel in filtered)
+            foreach (var apparel in Filtered)
             {
                 var rowRect = new Rect(inRect.x, curY, inRect.width, height);
                 if (Mouse.IsOver(rowRect))
@@ -67,8 +67,8 @@ namespace Transmog
 
         public override void OnAcceptKeyPressed()
         {
-            if (!filtered.EnumerableNullOrEmpty())
-                Select(filtered.First());
+            if (!Filtered.EnumerableNullOrEmpty())
+                Select(Filtered.First());
             Find.WindowStack.TryRemove(this);
         }
 

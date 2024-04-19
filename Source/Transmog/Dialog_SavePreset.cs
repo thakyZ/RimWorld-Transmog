@@ -6,7 +6,7 @@ namespace Transmog
 {
     class Dialog_SavePreset : Window
     {
-        CompTransmog preset;
+        readonly CompTransmog preset;
 
         public override Vector2 InitialSize => new Vector2(280, 175);
 

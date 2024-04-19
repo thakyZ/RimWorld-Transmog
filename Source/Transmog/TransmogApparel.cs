@@ -13,6 +13,14 @@ namespace Transmog
         bool ideoColor = false;
         Color color;
 
+        public override bool Equals(object obj) =>
+            obj is TransmogApparel transmog
+            && apparelDef == transmog.apparelDef
+            && styleDef == transmog.styleDef
+            && favoriteColor == transmog.favoriteColor
+            && ideoColor == transmog.ideoColor
+            && color == transmog.color;
+
         public Pawn Pawn
         {
             get => pawn;
@@ -117,7 +125,6 @@ namespace Transmog
 
         public void ExposeData()
         {
-            Scribe_References.Look(ref pawn, "pawn");
             Scribe_Defs.Look(ref apparelDef, "apparelDef");
             Scribe_Defs.Look(ref styleDef, "styleDef");
             Scribe_Values.Look(ref favoriteColor, "favoriteColor");

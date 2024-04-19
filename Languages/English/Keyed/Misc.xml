@@ -2,7 +2,10 @@
 <LanguageData>
     <Transmog.Transmog>Transmog</Transmog.Transmog>
 
+    <Transmog.SetFavoriteColor>Set to favorite color</Transmog.SetFavoriteColor>
+    <Transmog.SetIdeoColor>Set to ideo color</Transmog.SetIdeoColor>
     <Transmog.SetCustomColor>Set to custom color</Transmog.SetCustomColor>
+    <Transmog.Hexcode>hex code</Transmog.Hexcode>
     <Transmog.PresetName>preset name</Transmog.PresetName>
     <Transmog.CopyFromApparel>copy from apparel</Transmog.CopyFromApparel>
     <Transmog.Preset>preset</Transmog.Preset>

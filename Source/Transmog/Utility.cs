@@ -37,5 +37,7 @@ namespace Transmog
                 Convert.ToInt32(hexcode.Substring(2, 2), 16) * 1.0f / 255,
                 Convert.ToInt32(hexcode.Substring(4, 2), 16) * 1.0f / 255
             );
+
+        public static string toString(this Color color) => $"{(int)(color.r * 255):X2}{(int)(color.g * 255):X2}{(int)(color.b * 255):X2}";
     }
 }
