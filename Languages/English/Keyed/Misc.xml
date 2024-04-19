@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <LanguageData>
     <Transmog.Transmog>Transmog</Transmog.Transmog>
+    <Transmog.DisplayAllStyles>Display all styles</Transmog.DisplayAllStyles>
 
     <Transmog.SetFavoriteColor>Set to favorite color</Transmog.SetFavoriteColor>
     <Transmog.SetIdeoColor>Set to ideo color</Transmog.SetIdeoColor>

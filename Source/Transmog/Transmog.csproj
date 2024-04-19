@@ -27,6 +27,7 @@
     <Compile Include="Dialog_EditTransmog.cs" />
     <Compile Include="Dialog_SavePreset.cs" />
     <Compile Include="PresetManager.cs" />
+    <Compile Include="Settings.cs" />
     <Compile Include="Utility.cs" />
     <Compile Include="CompTransmog.cs" />
     <Compile Include="ITab_Pawn_Transmog.cs" />

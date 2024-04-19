@@ -9,6 +9,7 @@ namespace Transmog
     class Dialog_AddTransmog : Window
     {
         static readonly IEnumerable<ThingDef> apparel = DefDatabase<ThingDef>.AllDefsListForReading.Where(def => def.IsApparel);
+        HashSet<ThingDef> invertedApparel = new HashSet<ThingDef>();
         readonly IEnumerable<ThingDef> apparelForPawn;
         IEnumerable<ThingDef> Filtered => apparelForPawn.Where(apparel => apparel.LabelCap.ToString().IndexOf(filter, StringComparison.InvariantCultureIgnoreCase) >= 0);
         readonly Pawn pawn;
@@ -21,6 +22,7 @@ namespace Transmog
         {
             preventCameraMotion = false;
             draggable = true;
+            resizeable = true;
             doCloseX = true;
             this.pawn = pawn;
             apparelForPawn = apparel.Where(apparel => apparel.apparel.PawnCanWear(pawn));
@@ -51,8 +53,13 @@ namespace Transmog
                 var rowRect = new Rect(inRect.x, curY, inRect.width, height);
                 if (Mouse.IsOver(rowRect))
                     GUI.DrawTexture(rowRect, TexUI.HighlightTex);
-                Widgets.ThingIcon(new Rect(rowRect.x, rowRect.y, height, height), apparel);
-                Widgets.Label(new Rect(rowRect.x + height + gap, rowRect.y + 5f, rowRect.width, height - 10f), apparel.LabelCap);
+                Widgets.Label(new Rect(rowRect.x, rowRect.y + 5f, rowRect.width, height - 10f), apparel.LabelCap);
+                var styles = apparel.GetStyles();
+                var displayAllStyles = Transmog.settings.displayAllStyles ^ invertedApparel.Contains(apparel);
+                for (var i = 0; i < (displayAllStyles ? styles.Count : 1); ++i)
+                    Widgets.ThingIcon(new Rect(rowRect.xMax - Margin - height * (i + 1), curY, height, height), apparel, thingStyleDef: styles[i]);
+                if (styles.Count > 1 && Widgets.ButtonImage(new Rect(rowRect.xMax - Margin - height / 2, curY + height / 2, height / 2, height / 2), TexButton.Add))
+                    _ = invertedApparel.Contains(apparel) ? invertedApparel.Remove(apparel) : invertedApparel.Add(apparel);
                 if (Widgets.ButtonInvisible(rowRect))
                 {
                     Select(apparel);

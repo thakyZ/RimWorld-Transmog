@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <LanguageData>
     <Transmog.Transmog>幻化</Transmog.Transmog>
+    <Transmog.DisplayAllStyles>显示所有风格</Transmog.DisplayAllStyles>
 
     <Transmog.SetFavoriteColor>偏好色</Transmog.SetFavoriteColor>
     <Transmog.SetIdeoColor>文化代表色</Transmog.SetIdeoColor>

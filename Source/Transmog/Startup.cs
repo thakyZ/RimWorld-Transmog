@@ -31,6 +31,7 @@ namespace Transmog
                 }
             )
                 harmony.Patch(Method(typeColonName), transpiler: renderTranspiler);
+            harmony.Patch(Method("Verse.PawnRenderTree:SetupApparelNodes"), transpiler: new HarmonyMethod(Method("Transmog.HarmonyPatches:SetupTranspiler")));
             harmony.Patch(PropertyGetter("RimWorld.CompShield:ShouldDisplay"), prefix: new HarmonyMethod(Method("Transmog.HarmonyPatches:Prefix")));
             PresetManager.LoadPresets();
         }
@@ -42,21 +43,23 @@ namespace Transmog
         {
             for (int i = 0; i < instructions.Count(); ++i)
             {
-                var instruction = instructions.ElementAt(i);
+                yield return instructions.ElementAt(i);
                 if (
                     i + 2 < instructions.Count()
                     && instructions.ElementAt(i + 2).opcode == OpCodes.Callvirt
                     && (MethodInfo)instructions.ElementAt(i + 2).operand == PropertyGetter("RimWorld.Pawn_ApparelTracker:WornApparel")
                 )
                 {
-                    yield return instruction;
                     yield return new CodeInstruction(OpCodes.Callvirt, Method("Transmog.Utility:TransmogApparel"));
                     i += 2;
                 }
-                else
-                    yield return instruction;
             }
         }
+
+        static IEnumerable<CodeInstruction> SetupTranspiler(IEnumerable<CodeInstruction> instructions) =>
+            instructions.Where(
+                instruction => instruction.opcode != OpCodes.Callvirt || (MethodInfo)instruction.operand != PropertyGetter("RimWorld.Pawn_ApparelTracker:WornApparelCount")
+            );
 
         static bool Prefix(ref CompShield __instance, ref bool __result) => !(__instance.parent is Apparel apparel) || apparel.Wearer != null || (__result = false);
     }

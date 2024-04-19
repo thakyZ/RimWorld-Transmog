@@ -45,7 +45,7 @@ namespace Transmog
             var bRect = new Rect(inRect.x, inRect.y + 288, 320, 32);
 
             Widgets.ThingIcon(iconRect, transmog.GetApparel());
-            if (transmog.ApparelDef.CanBeStyled() && transmog.ApparelDef.GetStyles().Count() > 1 && Widgets.ButtonImage(styleRect, TexButton.SelectOverlappingNext))
+            if (transmog.ApparelDef.GetStyles().Count() > 1 && Widgets.ButtonImage(styleRect, TexButton.SelectOverlappingNext))
                 Find.WindowStack.Add(
                     new FloatMenu(
                         transmog
