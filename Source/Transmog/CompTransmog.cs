@@ -23,9 +23,11 @@ namespace Transmog
             }
         }
         public List<TransmogApparel> transmog = new List<TransmogApparel>();
-        List<TransmogApparel> tmpTransmog;
+        public Stack<List<TransmogApparel>> history = new Stack<List<TransmogApparel>>();
         Pawn Pawn => parent as Pawn;
         public List<Apparel> Apparel => transmog.Select(transmog => transmog.GetApparel()).ToList();
+
+        public void Save() => history.Push(transmog.Select(transmog => transmog.DuplicateForPawn(Pawn)).ToList());
 
         public void CopyFromApparel()
         {
@@ -41,7 +43,7 @@ namespace Transmog
             );
             if (!transmog.SequenceEqual(newTransmog))
             {
-                tmpTransmog = transmog;
+                Save();
                 transmog = newTransmog.ToList();
             }
             enabled = true;
@@ -53,7 +55,7 @@ namespace Transmog
             var newTransmog = preset.Where(apparel => apparel.ApparelDef?.apparel.PawnCanWear(Pawn) ?? false).Select(apparel => apparel.DuplicateForPawn(Pawn));
             if (!transmog.SequenceEqual(newTransmog))
             {
-                tmpTransmog = transmog;
+                Save();
                 transmog = newTransmog.ToList();
             }
             enabled = true;
@@ -62,21 +64,22 @@ namespace Transmog
 
         public void TryRevert()
         {
-            if (tmpTransmog == null)
+            if (history.Count == 0)
                 return;
-            transmog = tmpTransmog;
-            tmpTransmog = null;
+            transmog = history.Pop();
             Update();
         }
 
         public void Add(TransmogApparel transmog)
         {
+            Save();
             this.transmog.Add(transmog);
             Update();
         }
 
         public void RemoveAt(int index)
         {
+            Save();
             transmog.RemoveAt(index);
             Update();
         }

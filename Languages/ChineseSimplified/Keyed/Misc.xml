@@ -2,11 +2,11 @@
 <LanguageData>
     <Transmog.Transmog>幻化</Transmog.Transmog>
     <Transmog.DisplayAllStyles>显示所有风格</Transmog.DisplayAllStyles>
+    <Transmog.AlphaChannelEnabled>启用Alpha通道</Transmog.AlphaChannelEnabled>
 
     <Transmog.SetFavoriteColor>偏好色</Transmog.SetFavoriteColor>
     <Transmog.SetIdeoColor>文化代表色</Transmog.SetIdeoColor>
     <Transmog.SetCustomColor>自定义颜色</Transmog.SetCustomColor>
-    <Transmog.Hexcode>色码</Transmog.Hexcode>
     <Transmog.PresetName>预设名字</Transmog.PresetName>
     <Transmog.CopyFromApparel>复制于服装</Transmog.CopyFromApparel>
     <Transmog.Preset>预设</Transmog.Preset>

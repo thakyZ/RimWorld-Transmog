@@ -33,11 +33,13 @@ namespace Transmog
 
         public static Color toColor(this string hexcode) =>
             new Color(
-                Convert.ToInt32(hexcode.Substring(0, 2), 16) * 1.0f / 255,
-                Convert.ToInt32(hexcode.Substring(2, 2), 16) * 1.0f / 255,
-                Convert.ToInt32(hexcode.Substring(4, 2), 16) * 1.0f / 255
+                Convert.ToInt32(hexcode.Substring(0, 2), 16) / 255f,
+                Convert.ToInt32(hexcode.Substring(2, 2), 16) / 255f,
+                Convert.ToInt32(hexcode.Substring(4, 2), 16) / 255f,
+                hexcode.Length == 8 ? Convert.ToInt32(hexcode.Substring(6, 2), 16) / 255f : 1
             );
 
-        public static string toString(this Color color) => $"{(int)(color.r * 255):X2}{(int)(color.g * 255):X2}{(int)(color.b * 255):X2}";
+        public static string toString(this Color color, bool AlphaChannelEnabled = false) =>
+            $"{(int)(color.r * 255):X2}{(int)(color.g * 255):X2}{(int)(color.b * 255):X2}{(AlphaChannelEnabled ? $"{(int)(color.a * 255):X2}" : "")}";
     }
 }

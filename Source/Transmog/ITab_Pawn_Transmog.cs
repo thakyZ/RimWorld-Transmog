@@ -11,7 +11,8 @@ namespace Transmog
 
         Pawn Pawn => SelPawn ?? (SelThing as Corpse).InnerPawn;
         CompTransmog Preset => Pawn.Preset();
-        Texture2D Paint => ContentFinder<Texture2D>.Get("UI/Designators/Paint_Top");
+        readonly Texture2D PaintTex = ContentFinder<Texture2D>.Get("UI/Designators/Paint_Top");
+        readonly Texture2D RevertTex = ContentFinder<Texture2D>.Get("UI/Revert");
 
         public ITab_Pawn_Transmog()
         {
@@ -39,6 +40,9 @@ namespace Transmog
 
             if (Widgets.ButtonText(new Rect(inRect.x, curY, width / 3 - gap, height), "Transmog.CopyFromApparel".Translate()))
                 Preset.CopyFromApparel();
+
+            if (!Preset.history.EnumerableNullOrEmpty() && Widgets.ButtonImage(new Rect(inRect.xMax - height, inRect.yMax - height, height, height), RevertTex))
+                Preset.TryRevert();
 
             if (Widgets.ButtonText(new Rect(inRect.x + 1 * width / 3 + gap / 2, curY, width / 3 - gap, height), "Add".Translate()))
                 Find.WindowStack.Add(new Dialog_AddTransmog(Pawn));
@@ -68,7 +72,7 @@ namespace Transmog
             curY += height + gap;
 
             var scrollviewHeight = Preset.Apparel.Count * height;
-            Widgets.BeginScrollView(new Rect(inRect.xMin, curY, width, inRect.height - curY), ref scrollPosition, new Rect(inRect.xMin, curY, width - margin, scrollviewHeight));
+            Widgets.BeginScrollView(new Rect(inRect.x, curY, width, inRect.height - curY), ref scrollPosition, new Rect(inRect.x, curY, width - margin, scrollviewHeight));
 
             int indexToMoveup = -1;
             int indexToRemove = -1;
@@ -88,7 +92,7 @@ namespace Transmog
                 rowRight = new WidgetRow(rowRect.xMax - margin, rowRect.y, UIDirection.LeftThenDown);
                 if (rowRight.ButtonIcon(TexButton.Delete))
                     indexToRemove = i;
-                if (rowRight.ButtonIcon(Paint))
+                if (rowRight.ButtonIcon(PaintTex))
                 {
                     transmog.Pawn = Pawn;
                     Find.WindowStack.Add(new Dialog_EditTransmog(transmog));
@@ -100,12 +104,6 @@ namespace Transmog
             if (indexToRemove != -1)
                 Preset.RemoveAt(indexToRemove);
             Widgets.EndScrollView();
-
-            if (Event.current.keyCode == KeyBindingDefOf.Designator_Cancel.MainKey)
-            {
-                Preset.TryRevert();
-                Event.current.Use();
-            }
         }
     }
 }
