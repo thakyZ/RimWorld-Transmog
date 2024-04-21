@@ -53,7 +53,7 @@ namespace Transmog
                     new FloatMenu(
                         transmog
                             .ApparelDef.GetStyles()
-                            .Select(style => new FloatMenuOption(style?.Category.LabelCap ?? "None".Translate(), () => transmog.StyleDef = style))
+                            .Select(style => new FloatMenuOption(style?.Category?.LabelCap ?? style?.defName ?? "None".Translate(), () => transmog.StyleDef = style))
                             .ToList()
                     )
                 );

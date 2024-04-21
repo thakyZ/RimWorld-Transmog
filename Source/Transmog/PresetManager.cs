@@ -17,7 +17,7 @@ namespace Transmog
 
         public static void AddPreset(string name, CompTransmog preset)
         {
-            presets[name] = preset.transmog;
+            presets[name] = preset.Transmog;
             SavePresets();
         }
 

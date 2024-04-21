@@ -31,17 +31,20 @@ namespace Transmog
 
             Text.Font = GameFont.Small;
 
-            new WidgetRow(inRect.xMin, curY, UIDirection.RightThenDown).Label("Enable".Translate());
-            var rowRight = new WidgetRow(inRect.xMax, curY, UIDirection.LeftThenDown);
-            if (rowRight.ButtonIcon(Preset.Enabled ? Widgets.CheckboxOnTex : Widgets.CheckboxOffTex))
+            Widgets.Label(new Rect(inRect.xMin, curY + 5, width / 2, 22f), "Enable".Translate());
+            if (Widgets.ButtonImage(new Rect(inRect.center.x - gap - height, curY + 4, 24, 24), Preset.Enabled ? Widgets.CheckboxOnTex : Widgets.CheckboxOffTex))
                 Preset.Enabled ^= true;
+
+            Widgets.Label(new Rect(inRect.center.x + gap, curY + 5, width / 2, 22f), "Transmog.DraftedTransmogEnabled".Translate());
+            if (Widgets.ButtonImage(new Rect(inRect.xMax - height, curY + 4, 24, 24), Preset.DraftedTransmogEnabled ? Widgets.CheckboxOnTex : Widgets.CheckboxOffTex))
+                Preset.DraftedTransmogEnabled ^= true;
 
             curY += height + gap;
 
             if (Widgets.ButtonText(new Rect(inRect.x, curY, width / 3 - gap, height), "Transmog.CopyFromApparel".Translate()))
                 Preset.CopyFromApparel();
 
-            if (!Preset.history.EnumerableNullOrEmpty() && Widgets.ButtonImage(new Rect(inRect.xMax - height, inRect.yMax - height, height, height), RevertTex))
+            if (!Preset.History.EnumerableNullOrEmpty() && Widgets.ButtonImage(new Rect(inRect.xMax - height, inRect.yMax - height, height, height), RevertTex))
                 Preset.TryRevert();
 
             if (Widgets.ButtonText(new Rect(inRect.x + 1 * width / 3 + gap / 2, curY, width / 3 - gap, height), "Add".Translate()))
@@ -76,20 +79,20 @@ namespace Transmog
 
             int indexToMoveup = -1;
             int indexToRemove = -1;
-            for (var i = 0; i < Preset.transmog.Count; ++i)
+            for (var i = 0; i < Preset.Transmog.Count; ++i)
             {
-                var transmog = Preset.transmog[i];
+                var transmog = Preset.Transmog[i];
                 var rowRect = new Rect(inRect.x, curY, width, height);
 
                 if (i != 0 && Widgets.ButtonImage(new Rect(inRect.x, rowRect.y, height / 2, height / 2), TexButton.ReorderUp))
                     indexToMoveup = i;
-                if (i != Preset.transmog.Count - 1 && Widgets.ButtonImage(new Rect(inRect.x, rowRect.y + height / 2, height / 2, height / 2), TexButton.ReorderDown))
+                if (i != Preset.Transmog.Count - 1 && Widgets.ButtonImage(new Rect(inRect.x, rowRect.y + height / 2, height / 2, height / 2), TexButton.ReorderDown))
                     indexToMoveup = i + 1;
 
                 Widgets.ThingIcon(new Rect(inRect.x + height * 0.5f + gap, curY, height, height), transmog.GetApparel());
                 Widgets.Label(new Rect(inRect.x + height * 1.5f + gap * 2, curY + 5f, width, height - 10f), transmog.GetApparel().def.LabelCap);
 
-                rowRight = new WidgetRow(rowRect.xMax - margin, rowRect.y, UIDirection.LeftThenDown);
+                var rowRight = new WidgetRow(rowRect.xMax - margin, rowRect.y, UIDirection.LeftThenDown);
                 if (rowRight.ButtonIcon(TexButton.Delete))
                     indexToRemove = i;
                 if (rowRight.ButtonIcon(PaintTex))

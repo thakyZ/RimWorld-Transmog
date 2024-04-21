@@ -2,8 +2,11 @@
 <LanguageData>
     <Transmog.Transmog>Transmog</Transmog.Transmog>
     <Transmog.DisplayAllStyles>Display All Styles</Transmog.DisplayAllStyles>
+    <Transmog.DisabledOnDraft>Disabled On Draft</Transmog.DisabledOnDraft>
     <Transmog.AlphaChannelEnabled>Enable Alpha Channel</Transmog.AlphaChannelEnabled>
-    
+
+    <Transmog.DraftedTransmogEnabled>Enable Drafted Transmog</Transmog.DraftedTransmogEnabled>
+
     <Transmog.SetFavoriteColor>Set to favorite color</Transmog.SetFavoriteColor>
     <Transmog.SetIdeoColor>Set to ideo color</Transmog.SetIdeoColor>
     <Transmog.SetCustomColor>Set to custom color</Transmog.SetCustomColor>

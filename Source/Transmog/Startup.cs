@@ -32,7 +32,8 @@ namespace Transmog
             )
                 harmony.Patch(Method(typeColonName), transpiler: renderTranspiler);
             harmony.Patch(Method("Verse.PawnRenderTree:SetupApparelNodes"), transpiler: new HarmonyMethod(Method("Transmog.HarmonyPatches:SetupTranspiler")));
-            harmony.Patch(PropertyGetter("RimWorld.CompShield:ShouldDisplay"), prefix: new HarmonyMethod(Method("Transmog.HarmonyPatches:Prefix")));
+            harmony.Patch(PropertyGetter("RimWorld.CompShield:ShouldDisplay"), prefix: new HarmonyMethod(Method("Transmog.HarmonyPatches:ShieldPrefix")));
+            harmony.Patch(PropertySetter("RimWorld.Pawn_DraftController:Drafted"), postfix: new HarmonyMethod(Method("Transmog.HarmonyPatches:DraftedPostfix")));
             PresetManager.LoadPresets();
         }
     }
@@ -61,6 +62,8 @@ namespace Transmog
                 instruction => instruction.opcode != OpCodes.Callvirt || (MethodInfo)instruction.operand != PropertyGetter("RimWorld.Pawn_ApparelTracker:WornApparelCount")
             );
 
-        static bool Prefix(ref CompShield __instance, ref bool __result) => !(__instance.parent is Apparel apparel) || apparel.Wearer != null || (__result = false);
+        static bool ShieldPrefix(ref CompShield __instance, ref bool __result) => !(__instance.parent is Apparel apparel) || apparel.Wearer != null || (__result = false);
+
+        static void DraftedPostfix(ref Pawn_DraftController __instance) => __instance.pawn.apparel?.Notify_ApparelChanged();
     }
 }

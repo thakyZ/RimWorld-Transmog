@@ -2,7 +2,10 @@
 <LanguageData>
     <Transmog.Transmog>幻化</Transmog.Transmog>
     <Transmog.DisplayAllStyles>显示所有风格</Transmog.DisplayAllStyles>
+    <Transmog.DisabledOnDraft>征召时禁用</Transmog.DisabledOnDraft>
     <Transmog.AlphaChannelEnabled>启用Alpha通道</Transmog.AlphaChannelEnabled>
+
+    <Transmog.DraftedTransmogEnabled>启用征召幻化</Transmog.DraftedTransmogEnabled>
 
     <Transmog.SetFavoriteColor>偏好色</Transmog.SetFavoriteColor>
     <Transmog.SetIdeoColor>文化代表色</Transmog.SetIdeoColor>

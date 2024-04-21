@@ -22,12 +22,40 @@ namespace Transmog
                 Update();
             }
         }
-        public List<TransmogApparel> transmog = new List<TransmogApparel>();
-        public Stack<List<TransmogApparel>> history = new Stack<List<TransmogApparel>>();
-        Pawn Pawn => parent as Pawn;
-        public List<Apparel> Apparel => transmog.Select(transmog => transmog.GetApparel()).ToList();
 
-        public void Save() => history.Push(transmog.Select(transmog => transmog.DuplicateForPawn(Pawn)).ToList());
+        bool draftedTransmogEnabled;
+        public bool DraftedTransmogEnabled
+        {
+            get => draftedTransmogEnabled;
+            set
+            {
+                draftedTransmogEnabled = value;
+                Update();
+            }
+        }
+
+        public List<TransmogApparel> Transmog
+        {
+            get => DraftedTransmogEnabled && Pawn.Drafted ? draftedTransmog : transmog;
+            set
+            {
+                if (DraftedTransmogEnabled && Pawn.Drafted)
+                    draftedTransmog = value;
+                else
+                    transmog = value;
+            }
+        }
+        public Stack<List<TransmogApparel>> History => DraftedTransmogEnabled && Pawn.Drafted ? draftedHistory : history;
+
+        List<TransmogApparel> transmog = new List<TransmogApparel>();
+        Stack<List<TransmogApparel>> history = new Stack<List<TransmogApparel>>();
+
+        List<TransmogApparel> draftedTransmog = new List<TransmogApparel>();
+        Stack<List<TransmogApparel>> draftedHistory = new Stack<List<TransmogApparel>>();
+        Pawn Pawn => parent as Pawn;
+        public List<Apparel> Apparel => Transmog.Select(transmog => transmog.GetApparel()).ToList();
+
+        public void Save() => History.Push(Transmog.Select(transmog => transmog.DuplicateForPawn(Pawn)).ToList());
 
         public void CopyFromApparel()
         {
@@ -41,10 +69,10 @@ namespace Transmog
                         Color = apparel.DrawColor
                     }
             );
-            if (!transmog.SequenceEqual(newTransmog))
+            if (!Transmog.SequenceEqual(newTransmog))
             {
                 Save();
-                transmog = newTransmog.ToList();
+                Transmog = newTransmog.ToList();
             }
             enabled = true;
             Update();
@@ -53,10 +81,10 @@ namespace Transmog
         public void CopyFromPreset(List<TransmogApparel> preset)
         {
             var newTransmog = preset.Where(apparel => apparel.ApparelDef?.apparel.PawnCanWear(Pawn) ?? false).Select(apparel => apparel.DuplicateForPawn(Pawn));
-            if (!transmog.SequenceEqual(newTransmog))
+            if (!Transmog.SequenceEqual(newTransmog))
             {
                 Save();
-                transmog = newTransmog.ToList();
+                Transmog = newTransmog.ToList();
             }
             enabled = true;
             Update();
@@ -64,29 +92,29 @@ namespace Transmog
 
         public void TryRevert()
         {
-            if (history.Count == 0)
+            if (History.Count == 0)
                 return;
-            transmog = history.Pop();
+            Transmog = History.Pop();
             Update();
         }
 
         public void Add(TransmogApparel transmog)
         {
             Save();
-            this.transmog.Add(transmog);
+            Transmog.Add(transmog);
             Update();
         }
 
         public void RemoveAt(int index)
         {
             Save();
-            transmog.RemoveAt(index);
+            Transmog.RemoveAt(index);
             Update();
         }
 
         public void Moveup(int index)
         {
-            transmog.Reverse(index - 1, 2);
+            Transmog.Reverse(index - 1, 2);
             Update();
         }
 
@@ -95,9 +123,14 @@ namespace Transmog
         public override void PostExposeData()
         {
             Scribe_Values.Look(ref enabled, "transmogEnabled");
+            Scribe_Values.Look(ref draftedTransmogEnabled, "draftedTransmogEnabled");
             Scribe_Collections.Look(ref transmog, "transmog");
-            if (Scribe.mode == LoadSaveMode.PostLoadInit && transmog != null)
-                transmog.ForEach(transmog => transmog.Pawn = Pawn);
+            Scribe_Collections.Look(ref draftedTransmog, "draftedTransmog");
+            if (Scribe.mode == LoadSaveMode.PostLoadInit)
+            {
+                transmog?.ForEach(transmog => transmog.Pawn = Pawn);
+                draftedTransmog?.ForEach(transmog => transmog.Pawn = Pawn);
+            }
         }
     }
 }

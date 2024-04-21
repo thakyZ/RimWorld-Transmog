@@ -10,7 +10,8 @@ namespace Transmog
     {
         public static CompTransmog Preset(this Pawn pawn) => pawn.GetComp<CompTransmog>();
 
-        public static List<Apparel> TransmogApparel(Pawn pawn) => pawn.Preset()?.Enabled ?? false ? pawn.Preset().Apparel : pawn.apparel.WornApparel;
+        public static List<Apparel> TransmogApparel(Pawn pawn) =>
+            (pawn.Preset()?.Enabled ?? false) && !(Transmog.settings.disabledOnDraft && pawn.Drafted) ? pawn.Preset().Apparel : pawn.apparel.WornApparel;
 
         static Dictionary<ThingDef, List<ThingStyleDef>> styles = new Dictionary<ThingDef, List<ThingStyleDef>>();
 
