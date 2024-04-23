@@ -128,8 +128,12 @@ namespace Transmog
             Scribe_Collections.Look(ref draftedTransmog, "draftedTransmog");
             if (Scribe.mode == LoadSaveMode.PostLoadInit)
             {
-                transmog?.ForEach(transmog => transmog.Pawn = Pawn);
-                draftedTransmog?.ForEach(transmog => transmog.Pawn = Pawn);
+                if (transmog == null)
+                    transmog = new List<TransmogApparel>();
+                if (draftedTransmog == null)
+                    draftedTransmog = new List<TransmogApparel>();
+                transmog.ForEach(transmog => transmog.Pawn = Pawn);
+                draftedTransmog.ForEach(transmog => transmog.Pawn = Pawn);
             }
         }
     }
