@@ -25,7 +25,7 @@ namespace Transmog
             resizeable = true;
             doCloseX = true;
             this.pawn = pawn;
-            apparelForPawn = apparel.Where(apparel => apparel.apparel.PawnCanWear(pawn));
+            apparelForPawn = apparel.Where(apparel => apparel.apparel.PawnCanWear(pawn, Transmog.settings.ignoreGenderEnabled));
         }
 
         public override void DoWindowContents(Rect inRect)

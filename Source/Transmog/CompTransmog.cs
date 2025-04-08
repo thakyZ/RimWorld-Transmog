@@ -80,7 +80,7 @@ namespace Transmog
 
         public void CopyFromPreset(List<TransmogApparel> preset)
         {
-            var newTransmog = preset.Where(apparel => apparel.ApparelDef?.apparel.PawnCanWear(Pawn) ?? false).Select(apparel => apparel.DuplicateForPawn(Pawn));
+            var newTransmog = preset.Where(apparel => apparel.ApparelDef?.apparel.PawnCanWear(Pawn, Transmog.settings.ignoreGenderEnabled) ?? false).Select(apparel => apparel.DuplicateForPawn(Pawn));
             if (!Transmog.SequenceEqual(newTransmog))
             {
                 Save();
