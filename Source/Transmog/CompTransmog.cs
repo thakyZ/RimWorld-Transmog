@@ -2,6 +2,7 @@
 using System.Linq;
 using RimWorld;
 using Verse;
+using TransmogMod = Transmog.Transmog;
 
 namespace Transmog
 {
@@ -80,7 +81,7 @@ namespace Transmog
 
         public void CopyFromPreset(List<TransmogApparel> preset)
         {
-            var newTransmog = preset.Where(apparel => apparel.ApparelDef?.apparel.PawnCanWear(Pawn, Transmog.settings.ignoreGenderEnabled) ?? false).Select(apparel => apparel.DuplicateForPawn(Pawn));
+            var newTransmog = preset.Where(apparel => apparel.ApparelDef?.apparel.PawnCanWear(Pawn, TransmogMod.settings.ignoreGenderEnabled) ?? false).Select(apparel => apparel.DuplicateForPawn(Pawn));
             if (!Transmog.SequenceEqual(newTransmog))
             {
                 Save();
